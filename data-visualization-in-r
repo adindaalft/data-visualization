@@ -1,0 +1,52 @@
+mental = read.csv("C:\\Users\\Hp\\Downloads\\Suicide rates.csv", sep = ";")
+View(mental)
+summary(mental)
+
+library(tidyverse)
+library(ggplot2)
+male<-filter(mental,Sex == " Male")
+female<-filter(mental,Sex == " Female")
+
+
+#Female
+#10 Negara dengan Gangguan Mental Perempuan Tertinggi Tahun 2020
+ggplot(
+  female %>% 
+    select(Country,Sex,th2020) %>% 
+    arrange(-th2020) %>% 
+    head(10),aes(Country, th2020, fill = Country)) +
+  geom_col()+ 
+  theme(axis.text.x = element_text(angle = 90))+
+  labs(title = "10 Negara dengan Kasus Bunuh Diri Perempuan Tertinggi",
+       subtitle = "Tahun 2020",
+       caption = "source: Kaggle.com",
+       x = "Negara",
+       Y = "Banyaknya")
+
+#Persebaran Usia Penderita Gangguan Mental Tahun 2020
+ggplot(male,aes(Usia.20...29, th2020)) +
+  geom_point()+
+  xlab("Usia")+
+  ylab("Banyaknya")+
+  ggtitle("Persebaran Usia Penderita Gangguan Mental Tahun 2020")
+
+#Proporsi Penderita Penyakit Mental di Negara ASEAN
+ggplot(mental, aes(Usia.20...29, Country, col=Sex)) + 
+  geom_jitter(position = position_jitter(width=0.2),size=5)+
+  scale_y_discrete(limits = c("Indonesia","Singapore", "Brunei Darussalam",
+                              "Myanmar", "Thailand", "Cambodia",
+                              "Philippines", "Viet Nam", "Malaysia", 
+                              "Lao People's Democratic Republic"))+
+  labs(title = "Proporsi Kasus Bunuh Diri di Negara ASEAN",
+       subtitle = "Usia 20-29 Tahun",
+       col = "Jenis Kelamin",
+       x = "Banyaknya",
+       Y = "Negara")
+
+#Data Penderita Penyakit Mental Tahun 2020 berdasarkan Jenis Kelamin
+ggplot(mental, aes(x = Usia.20...29, y = th2020, col = Country)) +
+  geom_point(col = "cornflowerblue", 
+             alpha = 0.7, size = 3) +
+  geom_smooth(method = "lm", se = FALSE, size = 1.5) +
+  scale_color_manual(values = c("indianred3", "cornflowerblue")) +
+  facet_wrap(~Sex)  
